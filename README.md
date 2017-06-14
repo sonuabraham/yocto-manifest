@@ -60,21 +60,27 @@ stored but you should not need to touch this directory.
 ***
 **Note:**
 You can use the **-b** switch to specify the branch of the repository
-to use.  We develop on the guaranteed-to-break **dev** branch.  Most people should use
-the **master** branch, which should at least compile.
+to use.  We develop on the guaranteed-to-break **morty** branch.  Most people should use
+the **fido** branch, which should at least compile.
 
 The **-m** switch selects the manifest file (default is *default.xml*).
-Our default.xml on **master** is designed to be stable as it *pins*
+Our default.xml on **fido** is designed to be stable as it *pins*
 particular commits.
 
 To test out the bleeding edge, type:
 
-    $ repo init -u git://github.com/gumstix/yocto-manifest.git -b dev
+    $ repo init -u git://github.com/gumstix/yocto-manifest.git -b morty
     $ repo sync
+
+Note that the default settings for bblayers.conf and local.conf may change
+between branches.  If the environment was originally setup with e.g.
+_TEMPLATECONF=meta-gumstix-extras/conf_, check the _*.sample_ files in that
+directory for any corresponding changes needed to the settings in
+ _build/conf/_.
 
 To get back to the known stable version, type:
 
-    $ repo init -u git://github.com/gumstix/yocto-manifest.git -b master
+    $ repo init -u git://github.com/gumstix/yocto-manifest.git -b fido
     $ repo sync
 
 Also you can get a specific version of Yocto Project:
@@ -145,23 +151,22 @@ You can tweak the size parameter (--size) in the kickstart file to match the siz
 
 **7. Flash your image:**
 
-Note that your uSD will have to be at least 2GB large. Pop in your micro SD card to your card writer, and find out the location of the block device by running dmesg.
+Note that your uSD will have to be at least 2GB large. Pop in your micro SD card to your card writer, and find out the location of
+the block device by running `dmesg`.
 
-Be sure to install bmap-tools:
+Be sure to install `bmap-tools`:
 
     $ sudo apt-get install bmap-tools
 
 Create a bmap file:
 
     $ bmaptool create /var/tmp/wic/build/sdimage-gumstix-201506231742-mmcblk.direct > image.bmap
-    
+
 Flash uSD:
 
     $ sudo bmaptool copy --bmap image.bmap /var/tmp/wic/build/sdimage-gumstix-201506231742-mmcblk.direct /dev/sdb
-    
-Note :
 
-The "201506231742" will be different. It depends on when you create it.
+If you get an error due to the size of the image being bigger than the uSD card, adjust the size parameter (`--size`) in the kickstart file.
 
 Hooray you are done!
 
